@@ -2,8 +2,10 @@
 # Inputs (environment variables set by the Makefile):
 #   GDS  path to the GDS file
 #   CELL name of the cell to check
+#   MAGIC_TECH path to the sky130A .tech file (loaded directly; see the Makefile)
 # Prints every violation with its rule name in parentheses, then a total.
 
+tech load $env(MAGIC_TECH)
 gds read $env(GDS)
 load $env(CELL)
 drc on

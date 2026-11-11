@@ -17,7 +17,8 @@ REPORTS := $(BUILD)/reports
 PDK_ROOT ?= $(HOME)/.volare
 PDK ?= sky130A
 PDK_DIR := $(PDK_ROOT)/$(PDK)
-MAGIC_RC := $(PDK_DIR)/libs.tech/magic/$(PDK).magicrc
+# The PDK's .magicrc has paths from the machine that built it, so the tech file is loaded directly.
+MAGIC_TECH := $(PDK_DIR)/libs.tech/magic/$(PDK).tech
 NETGEN_SETUP := $(PDK_DIR)/libs.tech/netgen/$(PDK)_setup.tcl
 
 CASES := $(shell awk '$$1 ~ /^[a-z0-9_]+$$/ {print $$1}' tests/planted_rules.txt | sort -u)
@@ -46,9 +47,9 @@ magic-drc: layouts
 	@mkdir -p $(REPORTS)
 	@for g in $(GDS); do \
 	  n=$$(basename $$g .gds); \
-	  GDS=$$PWD/$$g CELL=inverter magic -dnull -noconsole -rcfile $(MAGIC_RC) \
+	  GDS=$$PWD/$$g CELL=inverter MAGIC_TECH=$(MAGIC_TECH) magic -dnull -noconsole -norcfile \
 	    < drc/magic_drc.tcl > $(REPORTS)/magic_$$n.txt 2>&1; \
-	  grep "MAGIC DRC:" $(REPORTS)/magic_$$n.txt || echo "MAGIC DRC: no summary for $$n"; \
+	  grep "MAGIC DRC:" $(REPORTS)/magic_$$n.txt || { echo "magic-drc: no result for $$n, see $(REPORTS)/magic_$$n.txt"; exit 1; }; \
 	done
 
 drc: klayout-drc magic-drc
@@ -60,13 +61,14 @@ lvs: layouts
 	@for g in $(LVS_GDS); do \
 	  n=$$(basename $$g .gds); \
 	  mkdir -p $(BUILD)/extracted/$$n; \
-	  GDS=$$PWD/$$g CELL=inverter OUTDIR=$$PWD/$(BUILD)/extracted/$$n \
-	    magic -dnull -noconsole -rcfile $(MAGIC_RC) < lvs/extract.tcl > $(BUILD)/extracted/$$n/extract.log 2>&1; \
+	  GDS=$$PWD/$$g CELL=inverter OUTDIR=$$PWD/$(BUILD)/extracted/$$n MAGIC_TECH=$(MAGIC_TECH) \
+	    magic -dnull -noconsole -norcfile < lvs/extract.tcl > $(BUILD)/extracted/$$n/extract.log 2>&1; \
+	  test -f $(BUILD)/extracted/$$n/inverter.spice || { echo "lvs: extraction failed for $$n, see $(BUILD)/extracted/$$n/extract.log"; exit 1; }; \
 	  netgen -batch lvs \
 	    "$(BUILD)/extracted/$$n/inverter.spice inverter" \
 	    "lvs/inverter.spice inverter" \
-	    $(NETGEN_SETUP) $(REPORTS)/lvs_$$n.txt > /dev/null 2>&1; \
-	  echo "LVS $$n: $$(grep -m1 -E 'match uniquely|do not match|not match' $(REPORTS)/lvs_$$n.txt || echo 'no result')"; \
+	    $(NETGEN_SETUP) $(REPORTS)/lvs_$$n.txt > $(REPORTS)/netgen_$$n.log 2>&1; \
+	  grep -m1 -E 'match uniquely|do not match|not match' $(REPORTS)/lvs_$$n.txt || { echo "lvs: netgen gave no result for $$n"; exit 1; }; \
 	done
 
 report:
