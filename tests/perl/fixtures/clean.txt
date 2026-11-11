@@ -1,0 +1,1 @@
+KLAYOUT DRC: 0 violation(s) in inverter.gds

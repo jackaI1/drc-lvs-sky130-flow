@@ -1,0 +1,50 @@
+name: DRC and LVS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit tests (KLayout + Perl, no PDK)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install KLayout Python module
+        run: pip install klayout
+      - name: Run tests
+        run: make test
+
+  flow:
+    name: Full flow (Magic DRC, Netgen LVS, sky130A PDK)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y magic netgen-lvs
+          pip install klayout volare
+      - name: Install the sky130A PDK
+        run: volare enable --pdk sky130 bdc9412b3e468c102d01b7cf6337be06ec6e9c9a
+      - name: Draw layouts and run both DRC checks
+        run: make layouts klayout-drc magic-drc
+      - name: Run LVS
+        run: make lvs
+      - name: Group results by rule
+        run: make report | tee build/reports/summary.txt
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drc-lvs-reports
+          path: build/reports/

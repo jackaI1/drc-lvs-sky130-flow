@@ -1,0 +1,6 @@
+* Schematic (the circuit we meant to draw) for the inverter standard cell.
+* LVS compares this against the netlist Magic extracts from the layout.
+.subckt inverter A Y VDD GND
+M1 Y A GND GND sky130_fd_pr__nfet_01v8 L=0.15 W=0.6
+M2 Y A VDD VDD sky130_fd_pr__pfet_01v8 L=0.15 W=0.6
+.ends inverter
