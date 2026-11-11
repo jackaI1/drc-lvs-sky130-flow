@@ -51,6 +51,8 @@ jobs:
       - name: Draw layouts and run both DRC checks
         run: make layouts klayout-drc magic-drc
       - name: Run LVS
+        env:
+          NETGEN: netgen-lvs
         run: make lvs
       - name: Group results by rule
         run: make report | tee build/reports/summary.txt

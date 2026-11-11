@@ -12,6 +12,8 @@
 
 PYTHON ?= python3
 PERL ?= perl
+# Ubuntu installs Netgen as netgen-lvs; CI sets NETGEN=netgen-lvs
+NETGEN ?= netgen
 BUILD ?= build
 REPORTS := $(BUILD)/reports
 PDK_ROOT ?= $(HOME)/.volare
@@ -64,7 +66,7 @@ lvs: layouts
 	  GDS=$$PWD/$$g CELL=inverter OUTDIR=$$PWD/$(BUILD)/extracted/$$n MAGIC_TECH=$(MAGIC_TECH) \
 	    magic -dnull -noconsole -norcfile < lvs/extract.tcl > $(BUILD)/extracted/$$n/extract.log 2>&1; \
 	  test -f $(BUILD)/extracted/$$n/inverter.spice || { echo "lvs: extraction failed for $$n, see $(BUILD)/extracted/$$n/extract.log"; exit 1; }; \
-	  netgen -batch lvs \
+	  $(NETGEN) -batch lvs \
 	    "$(BUILD)/extracted/$$n/inverter.spice inverter" \
 	    "lvs/inverter.spice inverter" \
 	    $(NETGEN_SETUP) $(REPORTS)/lvs_$$n.txt > $(REPORTS)/netgen_$$n.log 2>&1; \
