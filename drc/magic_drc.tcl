@@ -11,13 +11,10 @@ gds read $env(GDS)
 load $env(CELL)
 # The sky130 tech file defines the "drc" style in three variants. "full" runs every rule.
 drc style drc(full)
+cif style drc(full)
 drc on
-puts "DBG_TECH [tech name] DBG_BBOX [select bbox]"
-select top cell
-puts "DBG_SELBBOX [select bbox] DBG_NCELL [llength [cellname list children]]"
 drc check
 drc catchup
-puts "DBG_COUNT [drc count] DBG_STATUS [drc status]"
 drc listall why
 puts "MAGIC DRC: finished $env(CELL)"
 quit -noprompt

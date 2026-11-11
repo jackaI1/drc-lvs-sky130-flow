@@ -66,10 +66,9 @@ lvs: layouts
 	  GDS=$$PWD/$$g CELL=inverter OUTDIR=$$PWD/$(BUILD)/extracted/$$n MAGIC_TECH=$(MAGIC_TECH) \
 	    magic -dnull -noconsole -norcfile < lvs/extract.tcl > $(BUILD)/extracted/$$n/extract.log 2>&1; \
 	  test -f $(BUILD)/extracted/$$n/inverter.spice || { echo "lvs: extraction failed for $$n, see $(BUILD)/extracted/$$n/extract.log"; exit 1; }; \
-	  $(NETGEN) -batch lvs \
-	    "$(BUILD)/extracted/$$n/inverter.spice inverter" \
-	    "lvs/inverter.spice inverter" \
-	    $(NETGEN_SETUP) $(REPORTS)/lvs_$$n.txt > $(REPORTS)/netgen_$$n.log 2>&1; \
+	  EXT="$(BUILD)/extracted/$$n/inverter.spice inverter" SCH="lvs/inverter.spice inverter" \
+	    SETUP=$(NETGEN_SETUP) REPORT=$(REPORTS)/lvs_$$n.txt \
+	    $(NETGEN) -batch source lvs/run_lvs.tcl > $(REPORTS)/netgen_$$n.log 2>&1; \
 	  grep -m1 -E 'match uniquely|do not match|not match' $(REPORTS)/lvs_$$n.txt || { echo "lvs: netgen gave no result for $$n"; exit 1; }; \
 	done
 
