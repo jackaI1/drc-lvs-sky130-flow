@@ -29,11 +29,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install tools
+      - name: Install Netgen, Magic build dependencies, and Python tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y magic netgen-lvs
+          sudo apt-get install -y netgen-lvs tcl-dev tk-dev libcairo2-dev libx11-dev libglu1-mesa-dev
           pip install klayout volare
+      - name: Build Magic 8.3.411 (the version the sky130A PDK requires)
+        run: |
+          git clone --depth 1 --branch 8.3.411 https://github.com/RTimothyEdwards/magic.git "$RUNNER_TEMP/magic"
+          cd "$RUNNER_TEMP/magic"
+          ./configure --prefix="$HOME/.local"
+          make -j"$(nproc)"
+          make install
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Check tool versions
+        run: |
+          "$HOME/.local/bin/magic" --version 2>&1 | head -n 2 || true
+          netgen -batch quit 2>&1 | head -n 2 || true
       - name: Install the sky130A PDK
         run: volare enable --pdk sky130 bdc9412b3e468c102d01b7cf6337be06ec6e9c9a
       - name: Draw layouts and run both DRC checks
