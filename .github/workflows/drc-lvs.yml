@@ -32,7 +32,7 @@ jobs:
       - name: Install Netgen, Magic build dependencies, and Python tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y netgen-lvs tcl-dev tk-dev libcairo2-dev libx11-dev libglu1-mesa-dev
+          sudo apt-get install -y netgen-lvs tcl-dev tk-dev libcairo2-dev libx11-dev libglu1-mesa-dev csh
           pip install klayout volare
       - name: Build Magic 8.3.411 (the version the sky130A PDK requires)
         run: |
