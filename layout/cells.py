@@ -113,6 +113,15 @@ def _draw_inverter(layout, top, plant):
     box("met1", 0.025, 2.45, 1.73, 2.65)
     box("met1", 1.50, 1.87, 1.73, 2.65)
 
+    # P+ substrate tap outside the n-well, tied to GND, so the NMOS body is GND
+    box("tap", 1.45, -0.60, 1.75, -0.20)
+    box("psdm", 1.325, -0.725, 1.875, -0.075)
+    box("licon", 1.515, -0.485, 1.685, -0.315)
+    box("li", 1.435, -0.565, 1.765, -0.235)
+    box("mcon", 1.515, -0.485, 1.685, -0.315)
+    box("met1", 1.485, -0.515, 1.715, -0.16)
+    box("met1", 0.025, -0.30, 1.715, -0.16)  # bar from the tap to the GND strip
+
     if plant == "lvs_short_rails":
         box("met1", 0.025, 0.30, 0.255, 1.90)  # bridges GND and VDD
 
