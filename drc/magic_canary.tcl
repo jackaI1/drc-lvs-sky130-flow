@@ -4,9 +4,9 @@
 #   step 1: one metal1 wire 0.10 um wide           -> met1.1 (width needs 0.14 um)
 #   step 2: a second wire 0.10 um from the first   -> met1.2 (spacing needs 0.14 um)
 # The Makefile checks the output for both rule names.
-# Input: MAGIC_TECH path to the sky130A .tech file (see the Makefile).
+# Inputs: MAGIC_RC path to the PDK's sky130A.magicrc, PDK_ROOT (see the Makefile).
 
-tech load $env(MAGIC_TECH)
+source $env(MAGIC_RC)
 cellname create canary
 load canary
 drc style drc(full)

@@ -21,6 +21,8 @@ PDK ?= sky130A
 PDK_DIR := $(PDK_ROOT)/$(PDK)
 # The PDK's .magicrc has paths from the machine that built it, so the tech file is loaded directly.
 MAGIC_TECH := $(PDK_DIR)/libs.tech/magic/$(PDK).tech
+# The PDK's startup file sets the grid, the DRC options and the tech, as the PDK authors intend.
+MAGIC_RC := $(PDK_DIR)/libs.tech/magic/$(PDK).magicrc
 NETGEN_SETUP := $(PDK_DIR)/libs.tech/netgen/$(PDK)_setup.tcl
 
 CASES := $(shell awk '$$1 ~ /^[a-z0-9_]+$$/ {print $$1}' tests/planted_rules.txt | sort -u)
@@ -47,11 +49,11 @@ klayout-drc: layouts
 
 magic-drc: layouts
 	@mkdir -p $(REPORTS)
-	@MAGIC_TECH=$(MAGIC_TECH) magic -dnull -noconsole -norcfile < drc/magic_canary.tcl > $(REPORTS)/selftest_magic_canary.txt 2>&1; \
+	@MAGIC_RC=$(MAGIC_RC) PDK_ROOT=$(PDK_ROOT) magic -dnull -noconsole -norcfile < drc/magic_canary.tcl > $(REPORTS)/selftest_magic_canary.txt 2>&1; \
 	  for rule in 'met1.1' 'met1.2'; do grep -q "($$rule)" $(REPORTS)/selftest_magic_canary.txt || { echo "magic-drc: canary did not flag $$rule, see $(REPORTS)/selftest_magic_canary.txt"; exit 1; }; done
 	@for g in $(GDS); do \
 	  n=$$(basename $$g .gds); \
-	  GDS=$$PWD/$$g CELL=inverter MAGIC_TECH=$(MAGIC_TECH) magic -dnull -noconsole -norcfile \
+	  GDS=$$PWD/$$g CELL=inverter MAGIC_RC=$(MAGIC_RC) PDK_ROOT=$(PDK_ROOT) magic -dnull -noconsole -norcfile \
 	    < drc/magic_drc.tcl > $(REPORTS)/magic_$$n.txt 2>&1; \
 	  grep "MAGIC DRC:" $(REPORTS)/magic_$$n.txt || { echo "magic-drc: no result for $$n, see $(REPORTS)/magic_$$n.txt"; exit 1; }; \
 	done
