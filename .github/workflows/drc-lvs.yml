@@ -56,11 +56,10 @@ jobs:
         run: make lvs
       - name: Group results by rule
         run: make report | tee build/reports/summary.txt
-      - name: Show the extracted netlist and Magic logs
+      - name: Show the extracted netlist
         if: always()
         run: |
           cat build/extracted/inverter/inverter.spice || true
-          grep -h "MAGIC DRC COUNT" build/reports/magic_*.txt || true
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4

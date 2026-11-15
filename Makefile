@@ -47,6 +47,8 @@ klayout-drc: layouts
 
 magic-drc: layouts
 	@mkdir -p $(REPORTS)
+	@MAGIC_TECH=$(MAGIC_TECH) magic -dnull -noconsole -norcfile < drc/magic_canary.tcl > $(REPORTS)/selftest_magic_canary.txt 2>&1; \
+	  grep -q "(met1.2)" $(REPORTS)/selftest_magic_canary.txt || { echo "magic-drc: canary wire spacing was not flagged, see $(REPORTS)/selftest_magic_canary.txt"; exit 1; }
 	@for g in $(GDS); do \
 	  n=$$(basename $$g .gds); \
 	  GDS=$$PWD/$$g CELL=inverter MAGIC_TECH=$(MAGIC_TECH) magic -dnull -noconsole -norcfile \

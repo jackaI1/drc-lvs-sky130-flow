@@ -125,14 +125,16 @@ def _draw_inverter(layout, top, plant):
     if plant == "lvs_short_rails":
         box("met1", 0.025, 0.30, 0.255, 1.90)  # bridges GND and VDD
 
+    # Magic lists the ports of the extracted subcircuit in label order, so the
+    # labels go A, Y, VDD, GND to match the schematic's .subckt line.
     text("met1_pin", "A", 0.475, -0.70)
     text("met1_pin", "Y", 0.775, 1.00)
-    text("met1_pin", "GND", 0.14, -1.30)
     text("met1_pin", "VDD", 0.14, 2.90)
+    text("met1_pin", "GND", 0.14, -1.30)
     text("met1_label", "A", 0.475, -0.70)
     text("met1_label", "Y", 0.775, 1.00)
-    text("met1_label", "GND", 0.14, -1.30)
     text("met1_label", "VDD", 0.14, 2.90)
+    text("met1_label", "GND", 0.14, -1.30)
 
 
 def _draw_planted(layout, top, case):

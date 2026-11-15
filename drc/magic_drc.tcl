@@ -14,12 +14,6 @@ drc style drc(full)
 drc on
 drc check
 drc catchup
-# Print the error count first, so a run with no output is still visible in the log.
-if {[catch {drc count} n]} {
-  puts "MAGIC DRC COUNT: error $n"
-} else {
-  puts "MAGIC DRC COUNT: $n"
-}
 drc listall why
 puts "MAGIC DRC: finished $env(CELL)"
 quit -noprompt
