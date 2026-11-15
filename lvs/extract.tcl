@@ -3,9 +3,10 @@
 #   GDS  path to the GDS file
 #   CELL name of the cell to extract
 #   OUTDIR folder for the extracted netlist (written as <CELL>.spice)
-#   MAGIC_TECH path to the sky130A .tech file (loaded directly; see the Makefile)
+#   MAGIC_RC path to the PDK's sky130A.magicrc (sets the tech and grid, see the Makefile)
+#   PDK_ROOT folder that holds the sky130A PDK
 
-tech load $env(MAGIC_TECH)
+source $env(MAGIC_RC)
 gds read $env(GDS)
 load $env(CELL)
 extract do local

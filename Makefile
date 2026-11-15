@@ -19,9 +19,7 @@ REPORTS := $(BUILD)/reports
 PDK_ROOT ?= $(HOME)/.volare
 PDK ?= sky130A
 PDK_DIR := $(PDK_ROOT)/$(PDK)
-# The PDK's .magicrc has paths from the machine that built it, so the tech file is loaded directly.
-MAGIC_TECH := $(PDK_DIR)/libs.tech/magic/$(PDK).tech
-# The PDK's startup file sets the grid, the DRC options and the tech, as the PDK authors intend.
+# The PDK's Magic startup file sets the tech, the grid and the DRC options, as the PDK authors intend.
 MAGIC_RC := $(PDK_DIR)/libs.tech/magic/$(PDK).magicrc
 NETGEN_SETUP := $(PDK_DIR)/libs.tech/netgen/$(PDK)_setup.tcl
 
@@ -67,7 +65,7 @@ lvs: layouts
 	@for g in $(LVS_GDS); do \
 	  n=$$(basename $$g .gds); \
 	  mkdir -p $(BUILD)/extracted/$$n; \
-	  GDS=$$PWD/$$g CELL=inverter OUTDIR=$$PWD/$(BUILD)/extracted/$$n MAGIC_TECH=$(MAGIC_TECH) \
+	  GDS=$$PWD/$$g CELL=inverter OUTDIR=$$PWD/$(BUILD)/extracted/$$n MAGIC_RC=$(MAGIC_RC) PDK_ROOT=$(PDK_ROOT) \
 	    magic -dnull -noconsole -norcfile < lvs/extract.tcl > $(BUILD)/extracted/$$n/extract.log 2>&1; \
 	  test -f $(BUILD)/extracted/$$n/inverter.spice || { echo "lvs: extraction failed for $$n, see $(BUILD)/extracted/$$n/extract.log"; exit 1; }; \
 	  EXT="$(BUILD)/extracted/$$n/inverter.spice inverter" SCH="lvs/inverter.spice inverter" \
