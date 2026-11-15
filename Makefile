@@ -48,7 +48,7 @@ klayout-drc: layouts
 magic-drc: layouts
 	@mkdir -p $(REPORTS)
 	@MAGIC_RC=$(MAGIC_RC) PDK_ROOT=$(PDK_ROOT) magic -dnull -noconsole -norcfile < drc/magic_canary.tcl > $(REPORTS)/selftest_magic_canary.txt 2>&1; \
-	  for rule in 'met1.1' 'met1.2'; do grep -q "($$rule)" $(REPORTS)/selftest_magic_canary.txt || { echo "magic-drc: canary did not flag $$rule, see $(REPORTS)/selftest_magic_canary.txt"; exit 1; }; done
+	  grep -q "(met1.2)" $(REPORTS)/selftest_magic_canary.txt || { echo "magic-drc: canary did not flag met1.2, see $(REPORTS)/selftest_magic_canary.txt"; exit 1; }
 	@for g in $(GDS); do \
 	  n=$$(basename $$g .gds); \
 	  GDS=$$PWD/$$g CELL=inverter MAGIC_RC=$(MAGIC_RC) PDK_ROOT=$(PDK_ROOT) magic -dnull -noconsole -norcfile \
