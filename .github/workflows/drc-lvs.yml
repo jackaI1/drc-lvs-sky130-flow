@@ -47,7 +47,16 @@ jobs:
           "$HOME/.local/bin/magic" --version 2>&1 | head -n 2 || true
           netgen -batch quit 2>&1 | head -n 2 || true
       - name: Install the sky130A PDK
-        run: volare enable --pdk sky130 bdc9412b3e468c102d01b7cf6337be06ec6e9c9a
+        env:
+          # volare asks the GitHub API for the PDK release; the token avoids its anonymous rate limit
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in 1 2 3; do
+            volare enable --pdk sky130 bdc9412b3e468c102d01b7cf6337be06ec6e9c9a && exit 0
+            echo "volare failed (attempt $attempt), retrying in 60 s"
+            sleep 60
+          done
+          exit 1
       - name: Draw layouts and run both DRC checks
         run: make layouts klayout-drc magic-drc
       - name: Run LVS
