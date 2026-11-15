@@ -11,6 +11,7 @@ cellname create canary
 load canary
 select top cell
 drc style drc(full)
+cif ostyle drc(full)
 drc euclidean on
 drc on
 box 2um 0um 2.1um 1um

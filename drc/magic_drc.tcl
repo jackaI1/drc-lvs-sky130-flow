@@ -13,6 +13,7 @@ load $env(CELL)
 select top cell
 # The sky130 tech file defines the "drc" style in three variants. "full" runs every rule.
 drc style drc(full)
+cif ostyle drc(full)
 drc on
 drc check
 drc catchup
