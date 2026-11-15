@@ -1,0 +1,4 @@
+Circuit contains 3 nets, Circuit 2 contains 2 nets.
+Net count differs between circuits.
+Device count differs: 2 vs 2 devices.
+Netlists do not match.

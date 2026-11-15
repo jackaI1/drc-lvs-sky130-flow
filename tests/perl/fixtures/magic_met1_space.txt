@@ -1,0 +1,3 @@
+Metal1 spacing < 140 (met1.2)
+  2.60 0.00 2.70 1.00
+KLAYOUT DRC: 0 violation(s) in clean.gds

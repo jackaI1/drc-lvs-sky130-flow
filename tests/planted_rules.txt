@@ -1,0 +1,15 @@
+# Every planted layout error and the rule it must trip.
+# Format: <case> <rule>. "none" means DRC must stay clean and only LVS should fail.
+# The DRC cases are checked by tests/test_drc.py. The LVS cases are compared by Netgen in `make lvs`.
+poly_width       poly.1a
+poly_space       poly.2
+diff_width       diff/tap.1
+diff_space       diff/tap.3
+li_width         li.1
+mcon_width       mcon.1
+mcon_space       mcon.2
+met1_width       met1.1
+met1_space       met1.2
+nwell_width      nwell.1
+lvs_open_output  none
+lvs_short_rails  none
