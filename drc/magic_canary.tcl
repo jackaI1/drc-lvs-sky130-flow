@@ -9,6 +9,7 @@
 source $env(MAGIC_RC)
 cellname create canary
 load canary
+select top cell
 drc style drc(full)
 drc euclidean on
 drc on
@@ -16,12 +17,12 @@ box 2um 0um 2.1um 1um
 paint metal1
 drc check
 drc catchup
-puts "CANARY step 1 errors: [drc count]"
+puts "CANARY step 1 errors: [drc listall count]"
 box 2.2um 0um 2.3um 1um
 paint metal1
 drc check
 drc catchup
-puts "CANARY step 2 errors: [drc count]"
+puts "CANARY step 2 errors: [drc listall count]"
 drc listall why
 puts "MAGIC CANARY: finished"
 quit -noprompt
