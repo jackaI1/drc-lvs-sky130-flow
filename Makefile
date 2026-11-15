@@ -4,6 +4,7 @@
 #   make drc         KLayout and Magic design rule checks on every GDS file
 #   make lvs         Magic extraction + Netgen layout-vs-schematic compare
 #   make report      group every result by rule (Perl) and print the tables
+#   make check       fail unless every planted error is caught by its rule
 #   make test        Python and Perl unit tests (no PDK needed)
 #   make all         everything above
 #
@@ -27,9 +28,9 @@ CASES := $(shell awk '$$1 ~ /^[a-z0-9_]+$$/ {print $$1}' tests/planted_rules.txt
 GDS := $(BUILD)/inverter.gds $(addprefix $(BUILD)/planted/,$(addsuffix .gds,$(CASES)))
 STAMP := $(BUILD)/.layouts
 
-.PHONY: all layouts drc klayout-drc magic-drc lvs report test clean
+.PHONY: all layouts drc klayout-drc magic-drc lvs report check test clean
 
-all: test drc lvs report
+all: test drc lvs report check
 
 layouts: $(STAMP)
 
@@ -80,6 +81,9 @@ report:
 	@echo
 	@echo "== LVS by case =="
 	@$(PERL) scripts/group_lvs.pl $(REPORTS)/lvs_*.txt
+
+check:
+	@$(PERL) scripts/check_planted.pl tests/planted_rules.txt $(REPORTS)
 
 test:
 	$(PYTHON) -m unittest discover -s tests -p 'test_*.py' -v

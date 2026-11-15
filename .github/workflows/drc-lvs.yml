@@ -65,6 +65,8 @@ jobs:
         run: make lvs
       - name: Group results by rule
         run: make report | tee build/reports/summary.txt
+      - name: Check every planted error is caught by its rule
+        run: make check
       - name: Show the extracted netlist
         if: always()
         run: |
