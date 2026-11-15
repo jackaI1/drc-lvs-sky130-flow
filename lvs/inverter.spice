@@ -1,6 +1,9 @@
 * Schematic (the circuit we meant to draw) for the inverter standard cell.
 * LVS compares this against the netlist Magic extracts from the layout.
+* The transistors are written as instances of the sky130 PDK devices, the same form
+* Magic writes when it extracts the layout, so Netgen compares like with like.
+* Terminal order for each device: drain gate source bulk.
 .subckt inverter A Y VDD GND
-M1 Y A GND GND sky130_fd_pr__nfet_01v8 L=0.15 W=0.6
-M2 Y A VDD VDD sky130_fd_pr__pfet_01v8 L=0.15 W=0.6
+X0 Y A GND GND sky130_fd_pr__nfet_01v8 L=0.15 W=0.6
+X1 Y A VDD VDD sky130_fd_pr__pfet_01v8 L=0.15 W=0.6
 .ends inverter
